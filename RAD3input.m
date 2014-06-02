@@ -3,7 +3,7 @@ function test10(xmax,f,mumax,kd,xfirststage, RA, D3, RAmin, D3min)
 % xmax = maximum cell density, f = self renewal probability, mumax =
 % maximal growth rate, kd = death rate, xfirststage = initial cell 
 %density in first stage, RA = amount of RA, D3 = amount of D3, RAmin =
-%amount of RA needed to reach final stage, D3 = amount of D3 needed to
+%amount of RA needed to reach final stage, D3min = amount of D3 needed to
 %reach final stage
 initcon = [];
 initval = [];
@@ -29,10 +29,10 @@ X4 = X(:, 4);
 %for j = 2:(4)
  %   XR(:,1) = XR(:,1)+X(:,j);
 %nd
-plot(T*mumax, XR(:,1), 'b');
-plot(T*mumax, X3(:,1), 'r');
-plot(T*mumax, X2(:,1), 'g');
-plot(T*mumax, X4(:,1), 'm');
+plot(T*mumax, XR(:,1)/xmax, 'b');
+plot(T*mumax, X3(:,1)/xmax, 'r');
+plot(T*mumax, X2(:,1)/xmax, 'g');
+plot(T*mumax, X4(:,1)/xmax, 'm');
 xlabel('Tau, dimensionless time')
 ylabel('xsum*, dimensionless cell density of stages')
 title(['Time versus Cell Density for Self-Renewal Rate of', num2str(f)])
