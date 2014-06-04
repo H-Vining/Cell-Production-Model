@@ -1,4 +1,4 @@
-function test10(xmax,f,mumax,kd,xfirststage, RA, D3, RAmin, D3min)
+function RAD3input(xmax,f,mumax,kd,xfirststage, RA, D3, RAmin, D3min)
 %Shows the cell density versus time for a given cell with these parameters
 % xmax = maximum cell density, f = self renewal probability, mumax =
 % maximal growth rate, kd = death rate, xfirststage = initial cell 
@@ -20,15 +20,12 @@ for i = 1:5
     end
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
-[T, X] = ode45(@(t,x) test11(t,x,xmax,f,mumax,kd,RA,D3,RAmin,D3min), [0,145], initval,options);
+[T, X] = ode45(@(t,x) RAD3model1(t,x,xmax,f,mumax,kd,RA,D3,RAmin,D3min), [0,145], initval,options);
 hold on
 XR = X(:,1);
 X2 = X(:, 2);
 X3 = X(:, 3);
 X4 = X(:, 4);
-%for j = 2:(4)
- %   XR(:,1) = XR(:,1)+X(:,j);
-%nd
 plot(T*mumax, XR(:,1)/xmax, 'b');
 plot(T*mumax, X3(:,1)/xmax, 'r');
 plot(T*mumax, X2(:,1)/xmax, 'g');

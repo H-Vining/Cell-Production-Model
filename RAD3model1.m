@@ -9,7 +9,6 @@ function dx = RAD3model1(t,x,xmax,f,mumax,kd, RA, D3, RAmin, D3min)
 sumx = sum(x(1:4));
 dx = zeros(5,1);
 if (RA>0 || D3>0)&& RA<RAmin && D3<D3min
-
     if RA>0
         RAchange = ((RA-RAmin)/RAmin);
         dx(5) = RAchange*((1-x(5)/mumax))*x(5);
@@ -33,7 +32,6 @@ elseif (RA>0 || D3>0)&& (RA>=RAmin || D3>=D3min)
 else
     dx(5) = 0;
     dx(1) = (2*f-1)*x(5)*x(1)*(1-sumx/xmax) - kd*x(1);
-
 end
 if RA>RAmin && D3>D3min
     RAval = RA/(RA + D3);
