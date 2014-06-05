@@ -1,37 +1,51 @@
-function RAD3input(xmax,f,mumax,kd,xfirststage, RA, D3, RAmin, D3min)
-%Shows the cell density versus time for a given cell with these parameters
-% xmax = maximum cell density, f = self renewal probability, mumax =
-% maximal growth rate, kd = death rate, xfirststage = initial cell 
-%density in first stage, RA = amount of RA, D3 = amount of D3, RAmin =
-%amount of RA needed to reach final stage, D3min = amount of D3 needed to
-%reach final stage
+function xfin = RAD3input(HL60Cell,graph)
+%Shows the cell density versus time for a given cell
+% HL60Cell = struct for an HL60 cell with various relevant paramaters
+% graph is a boolean that gives whether or not the user wants a graph
 initcon = [];
 initval = [];
 for i = 1:5
     initcon = [initcon, 1e-4];
-    if i == 1
-        initval = [initval,xfirststage];
-    elseif i~= 1 && i<3
-        initval = [initval,0];
-    elseif i <5
-        initval = [initval,0];
+    if i <5
+        initval = [initval,HL60Cell.x(i)];
     else
-        initval = [initval,mumax*(1-sum(initval(1:4))/xmax)];
+        initval = [initval,HL60Cell.mumax*(1-sum(initval(1:4))/HL60Cell.xmax)];
     end
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
-[T, X] = ode45(@(t,x) RAD3model1(t,x,xmax,f,mumax,kd,RA,D3,RAmin,D3min), [0,145], initval,options);
-hold on
-XR = X(:,1);
-X2 = X(:, 2);
-X3 = X(:, 3);
-X4 = X(:, 4);
-plot(T*mumax, XR(:,1)/xmax, 'b');
-plot(T*mumax, X3(:,1)/xmax, 'r');
-plot(T*mumax, X2(:,1)/xmax, 'g');
-plot(T*mumax, X4(:,1)/xmax, 'm');
-xlabel('Tau, dimensionless time')
-ylabel('xsum*, dimensionless cell density of stages')
-title(['Time versus Cell Density for Self-Renewal Rate of', num2str(f)])
-hold off
+[T1, X1] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,0,0), [0,HL60.start],...
+    initval,options);
+endof = length(X1);
+xend = X1(endof,:);
+initcon = [];
+initval = [];
+for i = 1:5
+    initcon = [initcon, 1e-4];
+    if i <5
+        initval = [initval,xend(i)];
+    else
+        initval = [initval,HL60Cell.mumax*(1-sum(initval(1:4))/HL60Cell.xmax)];
+    end
+end
+options = odeset('RelTol',1e-4, 'AbsTol',initcon);
+[T2, X2] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,HL60Cell.RA,HL60Cell.D3),...
+    [HL60.start,HL60.end], initval,options);
+xfin = [X1;X2];
+tfin = [T1;T2];
+if graph
+    hold on
+    XR = xfin(:,1);
+    X2 = xfin(:, 2);
+    X3 = xfin(:, 3);
+    X4 = xfin(:, 4);
+    plot(tfin*HL60Cell.mumax, XR(:,1)/HL60Cell.xmax, 'b');
+    plot(tfin*HL60Cell.mumax, X3(:,1)/HL60Cell.xmax, 'r');
+    plot(tfin*HL60Cell.mumax, X2(:,1)/HL60Cell.xmax, 'g');
+    plot(tfin*HL60Cell.mumax, X4(:,1)/HL60Cell.xmax, 'm');
+    xlabel('Tau, dimensionless time')
+    ylabel('xsum*, dimensionless cell density of stages')
+    title(['Time versus Cell Density for Self-Renewal Rate of',...
+        num2str(HL60Cell.f)])
+    hold off
+end
 end
