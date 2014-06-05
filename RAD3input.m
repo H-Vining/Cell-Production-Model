@@ -13,7 +13,7 @@ for i = 1:5
     end
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
-[T1, X1] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,0,0), [0,HL60.start],...
+[T1, X1] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,0,0), [0,HL60Cell.start],...
     initval,options);
 endof = length(X1);
 xend = X1(endof,:);
@@ -29,8 +29,8 @@ for i = 1:5
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
 [T2, X2] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,HL60Cell.RA,HL60Cell.D3),...
-    [HL60.start,HL60.end], initval,options);
-xfin = [X1;X2];
+    [HL60Cell.start,HL60Cell.end], initval,options);
+xfin = [X1(:,1:4);X2(:,1:4)];
 tfin = [T1;T2];
 if graph
     hold on
