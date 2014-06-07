@@ -25,7 +25,8 @@ if (RA>0 || D3>0)&& RA<RAmin && D3<D3min
     end
     dx(1) = (2*f)*mumax*(1-sumx/xmax)*x(1)-x(5)*(1-sumx/xmax)*x(1) +...
     2*(1)*(1-sumx/xmax)*mumax*x(2)- kd*x(1);
-    dx(2) = 2*(1-f)*x(5)*(1-sumx/xmax)*x(1)+(2*f-1)*(1-sumx/xmax)*x(5)*x(2)-kd*x(2);
+    dx(2) = 2*(1-f)*x(5)*(1-sumx/xmax)*x(1)+...
+        (2*f-1)*(1-sumx/xmax)*x(5)*x(2)-kd*x(2);
 elseif (RA>0 || D3>0)&& (RA>=RAmin || D3>=D3min)
     if RA>RAmin
         dx(5) = ((RA-RAmin)/RAmin)*((1-x(5)/mumax))*x(5);
@@ -41,8 +42,8 @@ else
     dx(1) = (2*f-1)*x(5)*x(1)*(1-sumx/xmax) - kd*x(1);
 end
 if RA>RAmin && D3>D3min
-    RAval = RA/(RA + D3);
-    D3val = D3/(RA+D3);
+    RAval = (RA/RAmin)/((RA/RAmin)+(D3/D3min));
+    D3val = (D3/D3min)/((RA/RAmin)+(D3/D3min));
     dx(3) = 2*mumax*x(2)*RAval-kd*x(3);
     dx(4) = 2*mumax*x(2)*D3val-kd*x(4);
 elseif D3>D3min

@@ -1,4 +1,4 @@
-function xfin = RAD3input(HL60Cell,graph)
+function [xfin, tfin] = RAD3input(HL60Cell,graph)
 %Shows the cell density versus time for a given cell
 % HL60Cell = struct for an HL60 cell with various relevant paramaters
 % graph is a boolean that gives whether or not the user wants a graph
