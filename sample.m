@@ -60,7 +60,7 @@ while running
             vnew = [vnew, HL.kd];
             HL.kd = kd+(kd*perturb-2*kd*rand*perturb);
         end
-        HL.mumax = mumax;
+        HL.kd = kd;
     elseif choice ==3
         name = 'initial cell density';
         for j = 1:repeat;
@@ -109,6 +109,9 @@ while running
             timesave = [timesave, t];
             vnew = [vnew, HL.f];
             HL.f = f+(f*perturb-2*f*rand*perturb);
+            while HL.f>=1
+                HL.f = f+(f*perturb-2*f*rand*perturb);
+            end
         end
         HL.f = f;
     elseif choice ==8
@@ -147,12 +150,13 @@ while running
     fprintf(fid,'Data for a perturbation of %d%% in %s\n',perturb*100,...
         name);
     for a = 1:length(HL60save)
-        fprintf(fid,'Data for run %d where the %s is a value of %d\n',...
+        fprintf(fid,'Data for run %d where the %s is a value of %.3d\n',...
             a, name, vnew(a));
-        fprintf(fid,'%10s %10s %10s %10s\n', 'Stage 1','Stage 2',...
-            'RA Final','D3 Final');
+        fprintf(fid,'%-10s %-10s %-10s %-10s %-10s\n', 'Time', ...
+            'Stage 1','Stage 2','RA Final','D3 Final');
         for b = 1:length(HL60save{a})
-            fprintf(fid,'%10d %10d %10d %10d\n',HL60save{a}(b,:));
+            fprintf(fid,'%-10.3d %-10.3d %-10.3d %-10.3d %-10.3d\n',...
+                timesave{a}(b),HL60save{a}(b,:));
         end
     end
     fclose(fid);
@@ -161,33 +165,39 @@ while running
         graph = input('Enter a valid input:');
     end
     if graph
+        f = figure;
         hold on
         for a = 1:length(HL60save)
             XR = HL60save{a}(:,1);
             X2 = HL60save{a}(:, 2);
             X3 = HL60save{a}(:, 3);
             X4 = HL60save{a}(:, 4);
-            if choice ==1
-                plot(timesave{a}*vnew(a), XR(:,1)/HL.xmax, 'b');
-                plot(timesave{a}*vnew(a), X3(:,1)/HL.xmax, 'r');
-                plot(timesave{a}*vnew(a), X2(:,1)/HL.xmax, 'g');
-                plot(timesave{a}*vnew(a), X4(:,1)/HL.xmax, 'm');
-            elseif choice == 6
-                plot(timesave{a}*HL.mumax, XR(:,1)/vnew(a), 'b');
-                plot(timesave{a}*HL.mumax, X3(:,1)/vnew(a), 'r');
-                plot(timesave{a}*HL.mumax, X2(:,1)/vnew(a), 'g');
-                plot(timesave{a}*HL.mumax, X4(:,1)/vnew(a), 'm');
+            if choice == 6
+                plot(timesave{a}, XR(:,1)/vnew(a), 'b');
+                plot(timesave{a}, X3(:,1)/vnew(a), 'r');
+                plot(timesave{a}, X2(:,1)/vnew(a), 'g');
+                plot(timesave{a}, X4(:,1)/vnew(a), 'm');
             else
-                plot(timesave{a}*HL.mumax, XR(:,1)/HL.xmax, 'b');
-                plot(timesave{a}*HL.mumax, X3(:,1)/HL.xmax, 'r');
-                plot(timesave{a}*HL.mumax, X2(:,1)/HL.xmax, 'g');
-                plot(timesave{a}*HL.mumax, X4(:,1)/HL.xmax, 'm');
+                plot(timesave{a}, XR(:,1)/HL.xmax, 'b');
+                plot(timesave{a}, X3(:,1)/HL.xmax, 'r');
+                plot(timesave{a}, X2(:,1)/HL.xmax, 'g');
+                plot(timesave{a}, X4(:,1)/HL.xmax, 'm');
             end
         end
-        xlabel('Tau, dimensionless time')
+        xlabel('Time (in days)')
         ylabel('xsum*, dimensionless cell density of stages')
-        title(['Time versus Cell Density'])
+        title(['Time versus Cell Density for a perturbation of ',name,...
+            ' of ',num2str(perturb*100),' percent for ',...
+            num2str(repeat),' different trials.'])
         hold off
+        saveplot = input('Save this plot? 1 for yes, 0 for no:');
+        if saveplot ~=1&&saveplot~=0
+            saveplot = input('Invalid input, enter again:');
+        end
+        if saveplot
+            file = input('Enter the filename:','s');
+            saveas(f, file);
+        end
     end
     running = input('Enter 1 to run again or 0 to stop:');
     while running ~=0&&running~=1

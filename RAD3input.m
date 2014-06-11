@@ -13,7 +13,8 @@ for i = 1:5
     end
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
-[T1, X1] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,0,0), [0,HL60Cell.start],...
+t1 = linspace(0, HL60Cell.start,HL60Cell.start);
+[T1, X1] = ode45(@(t,x) RAD3model1(t1,x,HL60Cell,0,0), [0,HL60Cell.start],...
     initval,options);
 endof = length(X1);
 xend = X1(endof,:);
@@ -28,7 +29,8 @@ for i = 1:5
     end
 end
 options = odeset('RelTol',1e-4, 'AbsTol',initcon);
-[T2, X2] = ode45(@(t,x) RAD3model1(t,x,HL60Cell,HL60Cell.RA,HL60Cell.D3),...
+t2 = linspace(HL60Cell.start,HL60Cell.end,(HL60Cell.end-HL60Cell.start));
+[T2, X2] = ode45(@(t,x) RAD3model1(t2,x,HL60Cell,HL60Cell.RA,HL60Cell.D3),...
     [HL60Cell.start,HL60Cell.end], initval,options);
 xfin = [X1(:,1:4);X2(:,1:4)];
 tfin = [T1;T2];
