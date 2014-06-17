@@ -4,20 +4,26 @@ function parameters = samplefixed(HL)
 %at the end of the program.
 %HL is an HL60 struct.
 HLo = HL;
-HL60save = {};
-parameters = {};
-xinew = {};
 for i = 1:9;
-    perturba = rand*.5;
-    perturb(i) = perturba;
+    perturb(i) = rand*.5;
 end
 repeat = input('Enter how many iterations are wanted:');
 while repeat <=0
     repeat = input('Invalid input: Enter again:');
 end
+munew = zeros(1,repeat);
+kdnew = zeros(1,repeat);
+RAnew = zeros(1,repeat);
+D3new = zeros(1,repeat);
+xmnew = zeros(1,repeat);
+fnew = zeros(1,repeat);
+RAmnew = zeros(1,repeat);
+D3mnew = zeros(1,repeat);
+HL60save = cell(1,repeat);
+parameters = cell(1,repeat);
+xinew = cell(1,repeat);
 for j = 1:repeat;
-    HLo.mumax = HL.mumax+(HL.mumax*perturb(1)-...
-        2*HL.mumax*rand*perturb(1));
+    HLo.mumax = HL.mumax+(HL.mumax*perturb(1)-2*HL.mumax*rand*perturb(1));
     HLo.kd = HL.kd+(HL.kd*perturb(2)-2*HL.kd*rand*perturb(2));
     HLo.x = HL.x+(HL.x*perturb(3)-2*HL.x*rand*perturb(3));
     HLo.RA = HL.RA+(HL.RA*perturb(4)-2*HL.RA*rand*perturb(4));
@@ -27,10 +33,8 @@ for j = 1:repeat;
     while HL.f>=1
         HLo.f = HL.f+(HL.f*perturb(7)-2*HL.f*rand*perturb(7));
     end
-    HLo.RAmin = HL.RAmin+(HL.RAmin*perturb(8)-...
-        2*HL.RAmin*rand*perturb(8));
-    HLo.D3min = HL.D3min+(HL.D3min*perturb(9)-...
-        2*HL.D3min*rand*perturb(9));
+    HLo.RAmin = HL.RAmin+(HL.RAmin*perturb(8)-2*HL.RAmin*rand*perturb(8));
+    HLo.D3min = HL.D3min+(HL.D3min*perturb(9)-2*HL.D3min*rand*perturb(9));
     munew(j) = HLo.mumax;
     kdnew(j) = HLo.kd;
     xinew{j} = HLo.x;
@@ -141,4 +145,12 @@ if graph
         end
         first =0;
     end
+end
+savevar = input('Do you want to save each trials variables? yes=1,no=0:');
+if savevar~=1&&savevar~=0
+    savevar = input('Invalid input: enter again:');
+end
+if savevar
+    filemat = input('Enter the filename as a .mat:','s');
+    save(filemat,'parameter');
 end

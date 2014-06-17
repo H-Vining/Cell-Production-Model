@@ -12,7 +12,7 @@ mumax=HL60Cell.mumax;
 kd=HL60Cell.kd;
 RAmin=HL60Cell.RAmin;
 D3min=HL60Cell.D3min;
-sumx = sum(abs(x(1:5)));
+sumx = sum((x(1:5)));
 dx = zeros(6,1);
 if (RA>0 || D3>0)&& RA<RAmin && D3<D3min
     if RA>0
@@ -26,19 +26,19 @@ if (RA>0 || D3>0)&& RA<RAmin && D3<D3min
     dx(1) = (2*f)*mumax*(1-sumx/xmax)*x(1)-x(6)*(1-sumx/xmax)*x(1) +...
         2*(1)*(1-sumx/xmax)*mumax*x(2)- kd*x(1);
     dx(2) = 2*(1-f)*x(6)*(1-sumx/xmax)*x(1)+...
-        (2*f-1)*(1-sumx/xmax)*x(6)*x(2)-kd*x(2);
+        (2*f-1)*(1-sumx/xmax)*x(6)*x(2);
 elseif (RA>0 || D3>0)&& (RA>=RAmin || D3>=D3min)
     if RA>RAmin
-        dx(6) = ((RA-RAmin)/RAmin)*((1-x(6)/mumax))*x(6);
+        dx(6) = -((RA-RAmin)/RAmin)*((1-x(6)/mumax))*x(6);
     end
     if D3>D3min
-        dx(6) = ((D3-D3min)/D3min)*((1-x(6)/mumax))*x(6);
+        dx(6) = -((D3-D3min)/D3min)*((1-x(6)/mumax))*x(6);
     end
-    dx(1) = 2*f*mumax*(1-sumx/xmax)*x(1)-x(6)*(1-sumx/xmax)*x(1) - kd*x(1);
-    dx(2) = 2*(1-f)*(1-sumx/xmax)*x(6)*x(1)-(1-sumx/xmax)*x(6)*x(2)-kd*x(2);
+    dx(1) = 2*f*mumax*(1-sumx/xmax)*x(1)-mumax*(1-sumx/xmax)*x(1)- kd*x(1);
+    dx(2) = 2*(1-f)*(1-sumx/xmax)*mumax*x(1)-mumax*x(2)*(1-sumx/xmax);
 else
     dx(6) = 0;
-    dx(1) = (2*f)*x(6)*x(1)*(1-sumx/xmax) - kd*x(1);
+    dx(1) = (2)*x(6)*x(1)*(1-sumx/xmax) - kd*x(1);
 end
 if RA>RAmin && D3>D3min
     dx(5) = 2*mumax*x(2)*(1-sumx/xmax)-kd*x(5);
