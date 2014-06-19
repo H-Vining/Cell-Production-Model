@@ -152,5 +152,5 @@ if savevar~=1&&savevar~=0
 end
 if savevar
     filemat = input('Enter the filename as a .mat:','s');
-    save(filemat,'parameter');
+    save(filemat,'parameters');
 end

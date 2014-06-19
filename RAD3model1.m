@@ -3,7 +3,7 @@ function dx = RAD3model1(t,x,HL60Cell,RA,D3)
 % t = time vector, x = vector of cell density, N = number of stages,
 %xmax = maximum cell density, f = self renewal probability,
 %mumax = maximal growth rate, kd = death rate, RA = RA amount
-%D3 = D3 amount, RAmin = minimum amount of RA needed to get to final 
+%D3 = D3 amount, RAmin = minimum amount of RA needed to get to final
 %differentiation stage, D3min = minimum amount of D3 needed to get to final
 %differentiation stage
 xmax=HL60Cell.xmax;
@@ -41,11 +41,10 @@ else
     dx(1) = (2)*x(6)*x(1)*(1-sumx/xmax) - kd*x(1);
 end
 if RA>RAmin && D3>D3min
-    dx(5) = 2*mumax*x(2)*(1-sumx/xmax)-kd*x(5);
+    dx(5) = mumax*x(2)*(1-sumx/xmax)-kd*x(5)*x(6);
 elseif D3>D3min
-    dx(4) = 2*mumax*x(2)*(1-sumx/xmax)-kd*x(4);
+    dx(4) = mumax*x(2)*(1-sumx/xmax)-kd*x(4)*x(6);
 elseif RA>RAmin
-    dx(3) = 2*mumax*x(2)*(1-sumx/xmax)-kd*x(3);
+    dx(3) = mumax*x(2)*(1-sumx/xmax)-kd*x(3)*x(6);
 end
 end
-
